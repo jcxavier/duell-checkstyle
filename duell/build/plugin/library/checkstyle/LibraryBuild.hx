@@ -1,6 +1,8 @@
 package duell.build.plugin.library.checkstyle;
 
+import sys.FileSystem;
 import sys.io.File;
+import duell.objects.DuellLib;
 import haxe.xml.Fast;
 import duell.defines.DuellDefines;
 import haxe.io.Path;
@@ -20,10 +22,26 @@ class LibraryBuild
         var xml: Xml = Xml.parse(File.getContent(duellProjectPath));
         var fast: Fast = new Fast(xml.firstElement());
 
+        var libPath: String = DuellLib.getDuellLib("checkstyle").getPath();
+        var resourcesPath: String = Path.join([libPath, "resources"]);
+        var configPath: String = Path.join([resourcesPath, "config.json"]);
+        var outputPath: String = LibraryConfiguration.getData().OUTPUT_PATH;
+
+        if (LibraryConfiguration.getData().CONFIG_PATH != "")
+        {
+            configPath = LibraryConfiguration.getData().CONFIG_PATH;
+        }
+
         var args: Array<String> =
         [
             "run",
-            "checkstyle"
+            "checkstyle",
+            "-c",
+            configPath,
+            "-r",
+            "xml",
+            "-p",
+            outputPath
         ];
 
         for (element in fast.elements)
@@ -35,5 +53,13 @@ class LibraryBuild
         }
 
         CommandHelper.runHaxelib(null, args, { errorMessage: "error running checkstyle" });
+    }
+
+    public function clean(): Void
+    {
+        if (FileSystem.exists(LibraryConfiguration.getData().OUTPUT_PATH))
+        {
+            FileSystem.deleteFile(LibraryConfiguration.getData().OUTPUT_PATH);
+        }
     }
 }

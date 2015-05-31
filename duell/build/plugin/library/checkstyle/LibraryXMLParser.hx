@@ -24,17 +24,28 @@ class LibraryXMLParser
 
             switch(element.name)
             {
-                case 'config-id':
-                    parseConfigIdElement(element);
+                case 'config':
+                    parseConfigElement(element);
+
+                case 'output':
+                    parseOutputElement(element);
             }
         }
     }
 
-    private static function parseConfigIdElement(element: Fast): Void
+    private static function parseConfigElement(element: Fast): Void
     {
-        if (element.has.value)
+        if (element.has.path)
         {
-            LibraryConfiguration.getData().CONFIG_ID = element.att.value;
+            LibraryConfiguration.getData().CONFIG_PATH = DuellProjectXML.getConfig().resolvePath(element.att.path);
+        }
+    }
+
+    private static function parseOutputElement(element: Fast): Void
+    {
+        if (element.has.path)
+        {
+            LibraryConfiguration.getData().OUTPUT_PATH = DuellProjectXML.getConfig().resolvePath(element.att.path);
         }
     }
 }

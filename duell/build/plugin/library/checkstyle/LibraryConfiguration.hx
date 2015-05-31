@@ -1,8 +1,11 @@
 package duell.build.plugin.library.checkstyle;
 
+import haxe.io.Path;
+import duell.build.objects.Configuration;
 typedef LibraryConfigurationData =
 {
-    CONFIG_ID: String,
+    CONFIG_PATH: String,
+    OUTPUT_PATH: String
 }
 
 /**
@@ -37,7 +40,8 @@ class LibraryConfiguration
     {
         configuration =
         {
-            CONFIG_ID : ""
+            CONFIG_PATH : "",
+            OUTPUT_PATH : Path.join([Configuration.getData().OUTPUT, "checkstyle.xml"])
         };
     }
 }
